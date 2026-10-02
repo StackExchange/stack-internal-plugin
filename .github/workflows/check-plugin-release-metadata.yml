@@ -1,4 +1,4 @@
-name: Check plugin version
+name: Check plugin release metadata
 
 on:
   pull_request:
@@ -9,8 +9,8 @@ permissions:
   contents: read
 
 jobs:
-  version:
-    name: Plugin version incremented
+  metadata:
+    name: Version and release notes updated
     runs-on: ubuntu-latest
 
     steps:
@@ -19,7 +19,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Compare plugin versions
+      - name: Compare plugin release metadata
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
         run: |
@@ -82,6 +82,11 @@ jobs:
             return 0;
           }
 
+          function getReleaseNotes(manifest) {
+            const value = manifest.extensions?.['com.openai']?.publication?.release_notes;
+            return typeof value === 'string' ? value.trim() : null;
+          }
+
           try {
             const baseManifest = JSON.parse(
               execFileSync('git', ['show', `${process.env.BASE_SHA}:plugin.json`], { encoding: 'utf8' }),
@@ -89,6 +94,8 @@ jobs:
             const pullRequestManifest = JSON.parse(fs.readFileSync('plugin.json', 'utf8'));
             const baseVersion = parseVersion(baseManifest.version, 'Base branch');
             const pullRequestVersion = parseVersion(pullRequestManifest.version, 'Pull request');
+            const baseReleaseNotes = getReleaseNotes(baseManifest);
+            const pullRequestReleaseNotes = getReleaseNotes(pullRequestManifest);
 
             if (compareVersions(pullRequestVersion, baseVersion) <= 0) {
               throw new Error(
@@ -96,7 +103,20 @@ jobs:
               );
             }
 
+            if (!pullRequestReleaseNotes) {
+              throw new Error(
+                'plugin.json must contain non-empty extensions.com.openai.publication.release_notes.',
+              );
+            }
+
+            if (pullRequestReleaseNotes === baseReleaseNotes) {
+              throw new Error(
+                'extensions.com.openai.publication.release_notes must be updated for this release.',
+              );
+            }
+
             console.log(`Plugin version incremented from ${baseVersion.value} to ${pullRequestVersion.value}.`);
+            console.log('Plugin release notes were updated.');
           } catch (error) {
             console.error(error instanceof Error ? error.message : error);
             process.exit(1);
