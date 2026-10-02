@@ -22,6 +22,7 @@
         "websiteURL": "https://stackoverflow.co/internal/",
         "privacyPolicyURL": "https://policies.stackoverflow.co/internal/privacy-notice/",
         "termsOfServiceURL": "https://policies.stackoverflow.co/internal/basic-terms-of-service/",
+        "supportURL": "https://support.stackinternal.com/support/home", 
         "defaultPrompt": [
           "When is the new frontend scheduled to ship?",
           "Who owns the localization initiative?"
