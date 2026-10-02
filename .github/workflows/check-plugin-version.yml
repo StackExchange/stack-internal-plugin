@@ -1,0 +1,104 @@
+name: Check plugin version
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  version:
+    name: Plugin version incremented
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out pull request
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Compare plugin versions
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const { execFileSync } = require('node:child_process');
+
+          const semverPattern = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[A-Za-z-][0-9A-Za-z-]*)(?:\.(?:0|[1-9]\d*|\d*[A-Za-z-][0-9A-Za-z-]*))*))?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$/;
+
+          function parseVersion(value, source) {
+            if (typeof value !== 'string') {
+              throw new Error(`${source} plugin.json does not contain a string version.`);
+            }
+
+            const match = semverPattern.exec(value);
+            if (!match) {
+              throw new Error(`${source} plugin version ${JSON.stringify(value)} is not valid semantic versioning.`);
+            }
+
+            return {
+              value,
+              core: match.slice(1, 4).map(BigInt),
+              prerelease: match[4] ? match[4].split('.') : [],
+            };
+          }
+
+          function compareIdentifiers(left, right) {
+            const leftIsNumeric = /^\d+$/.test(left);
+            const rightIsNumeric = /^\d+$/.test(right);
+
+            if (leftIsNumeric && rightIsNumeric) {
+              return Number(BigInt(left) > BigInt(right)) - Number(BigInt(left) < BigInt(right));
+            }
+            if (leftIsNumeric !== rightIsNumeric) {
+              return leftIsNumeric ? -1 : 1;
+            }
+            return Number(left > right) - Number(left < right);
+          }
+
+          function compareVersions(left, right) {
+            for (let index = 0; index < left.core.length; index += 1) {
+              if (left.core[index] !== right.core[index]) {
+                return left.core[index] > right.core[index] ? 1 : -1;
+              }
+            }
+
+            if (left.prerelease.length === 0 || right.prerelease.length === 0) {
+              return Number(left.prerelease.length === 0) - Number(right.prerelease.length === 0);
+            }
+
+            const length = Math.max(left.prerelease.length, right.prerelease.length);
+            for (let index = 0; index < length; index += 1) {
+              if (left.prerelease[index] === undefined) return -1;
+              if (right.prerelease[index] === undefined) return 1;
+
+              const comparison = compareIdentifiers(left.prerelease[index], right.prerelease[index]);
+              if (comparison !== 0) return comparison;
+            }
+
+            return 0;
+          }
+
+          try {
+            const baseManifest = JSON.parse(
+              execFileSync('git', ['show', `${process.env.BASE_SHA}:plugin.json`], { encoding: 'utf8' }),
+            );
+            const pullRequestManifest = JSON.parse(fs.readFileSync('plugin.json', 'utf8'));
+            const baseVersion = parseVersion(baseManifest.version, 'Base branch');
+            const pullRequestVersion = parseVersion(pullRequestManifest.version, 'Pull request');
+
+            if (compareVersions(pullRequestVersion, baseVersion) <= 0) {
+              throw new Error(
+                `plugin.json version must be greater than ${baseVersion.value}; found ${pullRequestVersion.value}.`,
+              );
+            }
+
+            console.log(`Plugin version incremented from ${baseVersion.value} to ${pullRequestVersion.value}.`);
+          } catch (error) {
+            console.error(error instanceof Error ? error.message : error);
+            process.exit(1);
+          }
+          NODE

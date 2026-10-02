@@ -1,0 +1,35 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "stack-internal-plugin",
+  "displayName": "Stack Internal",
+  "version": "1.0.2",
+  "description": "Access trusted knowledge",
+  "author": {
+    "name": "Stack Exchange, Inc.",
+    "url": "https://stackoverflow.co/internal/"
+  },
+  "homepage": "https://stackoverflow.co/internal/",
+  "keywords": ["Stack Internal", "Stack Overflow", "knowledge management", "enterprise knowledge", "internal knowledge"],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "Stack Internal",
+        "shortDescription": "Access trusted knowledge",
+        "longDescription": "This plugin connects ChatGPT and Codex to your trusted Stack Internal knowledge without breaking focus. Get the answers you need where you work, as you work. Brought to you by Stack Overflow. Available in the United States.",
+        "developerName": "Stack Exchange, Inc.",
+        "category": "Productivity",
+        "capabilities": ["Read"],
+        "websiteURL": "https://stackoverflow.co/internal/",
+        "privacyPolicyURL": "https://policies.stackoverflow.co/internal/privacy-notice/",
+        "termsOfServiceURL": "https://policies.stackoverflow.co/internal/basic-terms-of-service/",
+        "defaultPrompt": [
+          "When is the new frontend scheduled to ship?",
+          "Who owns the localization initiative?"
+        ],
+        "brandColor": "#FF5E00",
+        "composerIcon": "./assets/stack-internal-logo.png",
+        "logo": "./assets/stack-internal-logo.png"
+      }
+    }
+  }
+}
