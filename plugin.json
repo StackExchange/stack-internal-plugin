@@ -13,6 +13,7 @@
   "extensions": {
     "com.openai": {
       "interface": {
+        "name": "app-6a98e9a5e17c8191abdb5f764ebf44bc",
         "displayName": "Stack Internal",
         "shortDescription": "Access trusted knowledge",
         "longDescription": "This plugin connects ChatGPT and Codex to your trusted Stack Internal knowledge without breaking focus. Get the answers you need where you work, as you work. Brought to you by Stack Overflow. Available in the United States.",
