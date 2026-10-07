@@ -8,7 +8,7 @@
     "name": "Stack Exchange, Inc.",
     "url": "https://stackoverflow.co/internal/"
   },
-  "privacyPolicyURL": "https://policies.stackoverflow.co/internal/privacy-notice/",
+  "privacyPolicyUrl": "https://policies.stackoverflow.co/internal/privacy-notice/",
   "homepage": "https://stackoverflow.co/internal/",
   "keywords": ["Stack Internal", "Stack Overflow", "knowledge management", "enterprise knowledge", "internal knowledge"]
 }
