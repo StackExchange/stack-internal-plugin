@@ -1,0 +1,59 @@
+name: Check plugin manifest sync
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  manifest-sync:
+    name: Claude plugin manifest is updated
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out pull request
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Check plugin manifest sync
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const { execFileSync } = require('node:child_process');
+
+          const sourcePath = 'plugin.json';
+          const mirrorPath = '.claude-plugin/plugin.json';
+          const changedFiles = execFileSync(
+            'git',
+            ['diff', '--name-only', `${process.env.BASE_SHA}...HEAD`],
+            { encoding: 'utf8' },
+          ).trim().split('\n').filter(Boolean);
+
+          if (!changedFiles.includes(sourcePath)) {
+            console.log(`${sourcePath} was not changed; no sync check is needed.`);
+            process.exit(0);
+          }
+
+          if (!changedFiles.includes(mirrorPath)) {
+            console.error(`${sourcePath} changed, but ${mirrorPath} was not updated.`);
+            process.exit(1);
+          }
+
+          const expectedMirror = fs
+            .readFileSync(sourcePath, 'utf8')
+            .replaceAll('"./assets/', '"../assets/');
+          const actualMirror = fs.readFileSync(mirrorPath, 'utf8');
+
+          if (actualMirror !== expectedMirror) {
+            console.error(
+              `${mirrorPath} is out of sync with ${sourcePath}. Copy the manifest and update its asset paths from ./assets/ to ../assets/.`,
+            );
+            process.exit(1);
+          }
+
+          console.log(`${mirrorPath} is updated and in sync with ${sourcePath}.`);
+          NODE

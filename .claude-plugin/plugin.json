@@ -1,0 +1,113 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "stack-internal-plugin",
+  "displayName": "Stack Internal",
+  "version": "1.0.2",
+  "description": "Access trusted knowledge",
+  "author": {
+    "name": "Stack Exchange, Inc.",
+    "url": "https://stackoverflow.co/internal/"
+  },
+  "homepage": "https://stackoverflow.co/internal/",
+  "keywords": ["Stack Internal", "Stack Overflow", "knowledge management", "enterprise knowledge", "internal knowledge"],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "Stack Internal",
+        "shortDescription": "Access trusted knowledge",
+        "longDescription": "This plugin connects ChatGPT and Codex to your trusted Stack Internal knowledge without breaking focus. Get the answers you need where you work, as you work. Brought to you by Stack Overflow. Available in the United States.",
+        "developerName": "Stack Exchange, Inc.",
+        "category": "Productivity",
+        "capabilities": ["Read"],
+        "websiteURL": "https://stackoverflow.co/internal/",
+        "privacyPolicyURL": "https://policies.stackoverflow.co/internal/privacy-notice/",
+        "termsOfServiceURL": "https://policies.stackoverflow.co/internal/basic-terms-of-service/",
+        "supportURL": "https://support.stackinternal.com/support/home", 
+        "defaultPrompt": [
+          "When is the new frontend scheduled to ship?",
+          "Who owns the localization initiative?"
+        ],
+        "brandColor": "#FF5E00",
+        "composerIcon": "../assets/stack-internal-logo.png",
+        "logo": "../assets/stack-internal-logo.png"
+      },
+      "review": {
+          "test_cases": {
+            "positive": [
+              {
+                "description": "Get support on company standard",
+                "prompt": "What's our standard approach to error handling in backend services?",
+                "tools_triggered": "search_nodes, get_node",
+                "expected_behavior": "Return company error handling standards"
+              },
+              {
+                "description": "Get knowledge on company strategy",
+                "prompt": "What’s our branching strategy?",
+                "tools_triggered": "search_nodes, get_node",
+                "expected_behavior": "Return company branching strategy"
+              },
+              {
+                "description": "Search company knowledge",
+                "prompt": "Search for our approved encryption patterns and summarize the relevant guidance.",
+                "tools_triggered": "search_nodes, get_node",
+                "expected_behavior": "Return a summary of the approved encryption patterns and relevant guidance from the company knowledge base."
+              },
+              {
+                "description": "Search company knowledge and get details",
+                "prompt": "Search for our Kubernetes deployment process. Open the most relevant node and tell me whether it mentions the current deploy flow.",
+                "tools_triggered": "search_nodes, get_node",
+                "expected_behavior": "List the action items recorded in the notes without inventing owners or deadlines."
+              },
+              {
+                "description": "Handle no matches",
+                "prompt": "Find notes about Project Northstar.",
+                "tools_triggered": "search_nodes",
+                "expected_behavior": "Report that no matching notes were found in the test workspace."
+              }
+            ],
+            "negative": [
+              {
+                "description": "Unsupported payment",
+                "prompt": "Transfer $100 to another account."
+              },
+              {
+                "description": "Unsupported deletion",
+                "prompt": "Delete all my notes."
+              },
+              {
+                "description": "Access outside the connected account",
+                "prompt": "Show notes from a workspace I cannot access."
+              }
+            ]
+          },
+          "demo_recording_url": "https://youtu.be/ejo9nFtofdY?si=jKNxfAsBchwtIP4N",
+          "commerce": false,
+          "commerce_description": "This plugin does not sell products or process payments."
+        },
+      "publication": {
+          "countries": [
+            "AD", "AE", "AG", "AI", "AL", "AM", "AO", "AQ", "AR", "AS", "AT", "AU",
+            "AW", "AX", "AZ", "BA", "BB", "BD", "BE", "BF", "BG", "BH", "BI", "BJ",
+            "BL", "BM", "BN", "BO", "BQ", "BR", "BS", "BT", "BV", "BW", "BZ", "CA",
+            "CC", "CH", "CI", "CK", "CL", "CM", "CN", "CO", "CR", "CV", "CW", "CX",
+            "CY", "CZ", "DE", "DJ", "DK", "DM", "DO", "DZ", "EC", "EE", "EG", "EH",
+            "ER", "ES", "FI", "FJ", "FK", "FM", "FO", "FR", "GA", "GB", "GD", "GE",
+            "GF", "GG", "GH", "GI", "GL", "GM", "GN", "GP", "GQ", "GR", "GS", "GT",
+            "GU", "GW", "GY", "HM", "HN", "HR", "HT", "HU", "ID", "IE", "IL", "IM",
+            "IN", "IO", "IS", "IT", "JE", "JM", "JO", "JP", "KE", "KG", "KH", "KI",
+            "KM", "KN", "KR", "KW", "KY", "KZ", "LA", "LB", "LC", "LI", "LK", "LR",
+            "LS", "LT", "LU", "LV", "MA", "MC", "MD", "ME", "MF", "MG", "MH", "MK",
+            "MN", "MO", "MP", "MQ", "MR", "MS", "MT", "MU", "MV", "MW", "MX", "MY",
+            "MZ", "NA", "NC", "NE", "NF", "NG", "NL", "NO", "NP", "NR", "NU", "NZ",
+            "OM", "PA", "PE", "PF", "PG", "PH", "PK", "PL", "PM", "PN", "PR", "PS",
+            "PT", "PW", "PY", "QA", "RE", "RO", "RS", "RW", "SA", "SB", "SC", "SE",
+            "SG", "SH", "SI", "SJ", "SK", "SL", "SM", "SN", "SR", "ST", "SV", "SX",
+            "SZ", "TC", "TD", "TF", "TG", "TH", "TJ", "TK", "TL", "TM", "TN", "TO",
+            "TR", "TT", "TV", "TW", "TZ", "UA", "UG", "UM", "US", "UY", "UZ", "VA",
+            "VC", "VG", "VI", "VN", "VU", "WF", "WS", "YT", "ZA", "ZM"
+          ],
+          "release_notes": "Plugin is now bundled with skill to improve MCP search capabilities."
+        }
+      }
+    }
+}
