@@ -9,6 +9,10 @@
     "url": "https://stackoverflow.co/internal/"
   },
   "privacyPolicyUrl": "https://policies.stackoverflow.co/internal/privacy-notice/",
+  "documentationUrl": "https://support.stackinternal.com/support/home",
+  "repository": "https://github.com/StackExchange/stack-internal-plugin",
+  "termsOfServiceUrl": "https://policies.stackoverflow.co/internal/",
+  "supportUrl": "https://support.stackinternal.com/support/home",
   "homepage": "https://stackoverflow.co/internal/",
   "keywords": ["Stack Internal", "Stack Overflow", "knowledge management", "enterprise knowledge", "internal knowledge"]
 }
